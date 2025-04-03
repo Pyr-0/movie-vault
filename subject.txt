@@ -1,0 +1,382 @@
+Let’s recap the previous project’s phase:
+Our movie application had a CLI with the following functionalities:
+CRUD: Create, Read, Update, Delete.
+Analytics: Top-rated movies, least-rated movies etc.
+Nested Structure: The movie information is stored in a nested structure.
+Persistent Storage: The data is loaded and stored in a JSON file.
+In this phase of our project we will introduce the following functionalities to our application:
+OOP Using object-oriented programming to create a storage manager
+API Fetching: Information about the movies is fetched from an API.
+Website Generation: A website is generated with your code.
+
+Features
+We have many new an exciting features in this part!
+Multiple Storage Options with OOP
+Currently, your application supports a single type of storage: JSON, with a hardcoded file. We want to solve the following problems:
+What if the user has more than one storage file, for example, one storage file for each family member with their favorite movies?
+What if the user wants to store the data in a CSV file?
+Or in another file type?
+API Fetching
+It’s nice to add the movies’ data manually, but who really wants that? A better experience would be to enter only the movie title, and all the other information is magically retrieved. This is exactly what you’re going to do.
+Static Web Interface
+CLI (Command Line Interface) is nice and certainly useful; But a web interface can significantly improve the experience. In this part, we will add a simple web interface that displays our movie library.
+Step-by-step
+Don’t worry, as always - we will complete all the steps gradually, step by steps. By the end of this exercise, you’ll have a magnificent application!
+
+Create Storage Classes
+In this step, we will implement storage classes to help us achieve the desired architecture.
+Current Architecture
+Your current movie_storage.py file should contain the following functions:
+def list_movies():
+    """
+    Returns a dictionary of dictionaries that
+    contains the movies information in the database.
+
+    The function loads the information from the JSON
+    file and returns the data. 
+
+    For example, the function may return:
+    {
+      "Titanic": {
+        "rating": 9,
+        "year": 1999
+      },
+      "..." {
+        ...
+      },
+    }
+    """
+    pass
+
+
+def add_movie(title, year, rating, poster):
+    """
+    Adds a movie to the movies database.
+    Loads the information from the JSON file, add the movie,
+    and saves it. The function doesn't need to validate the input.
+    """
+    pass
+
+
+def delete_movie(title):
+    """
+    Deletes a movie from the movies database.
+    Loads the information from the JSON file, deletes the movie,
+    and saves it. The function doesn't need to validate the input.
+    """
+    pass
+
+
+def update_movie(title, rating):
+    """
+    Updates a movie from the movies database.
+    Loads the information from the JSON file, updates the movie,
+    and saves it. The function doesn't need to validate the input.
+    """
+    pass
+While this works, it doesn’t give us the flexibility we want.
+Desired Architecture
+Multiple Storage Files
+Imagine a family that uses your application. The family includes John, Sara, and Jack. Each family member has their favorite movies that they want to store in the movie app.
+The application you build should serve all the family members. One way to implement it (there are more) would be to use a storage file for each family member. For example, you may have the following files in your directory:
+john.json - John's storage file
+sara.json - Sara's storage file
+jack.json - Jack's storage file
+Your current architecture doesn’t support this feature out-of-the-box. If you try to implement it, it will be challenging.
+Multiple Storage Types
+Currently, you support only JSON storage. What if we want to store the data in a CSV file? Or in the future, in a database?
+It’s unclear how to implement it in the most correct way. Luckily, we have OOP to solve problems exactly like that.
+Specification
+Classes Diagram
+.guides/img/storage_diagram
+Click here to view the full-sized diagram.
+We will have:
+An interface called IStorage that exposes all the 4 CRUD commands.
+Two classed that implement these interfaces.
+In the first step, we will implement only the JSON storage class.
+Step-By-Step Instructions
+1. Create Interface
+First, with the same methods above, let’s create an interface (abstract class) named IStorage (“I” for “Interface”). Create this interface in a separate file, istorage.py.
+This should be the content of istorage.py file:
+from abc import ABC, abstractmethod
+
+
+class IStorage(ABC):
+    @abstractmethod
+    def list_movies(self):
+        pass
+
+    @abstractmethod
+    def add_movie(self, title, year, rating, poster):
+        pass
+
+    @abstractmethod
+    def delete_movie(self, title):
+        pass
+
+    @abstractmethod
+    def update_movie(self, title, rating):
+        pass
+
+We omitted the docstrings for simplicity, but you should add it in your code.
+❗Note: you don’t need to implement the functions inside the interface, an interface includes only the functions definitions.
+2. Implement Interface
+Create another file called storage_json.py that inherits from this interface and implements its functions:
+from istorage import IStorage
+
+
+class StorageJson(IStorage):
+    def __init__(self, file_path):
+        ...
+
+    def list_movies(self):
+        ...
+
+    def add_movie(self, title, year, rating, poster):
+        ...
+
+    def delete_movie(self, title):
+        ...
+
+    def update_movie(self, title, rating):
+        ...
+You already have most of the code from the previous exercise, you just need to make it fit to the new OOP structure.
+3. Test Your Class
+In this scenario, when we mention “Test Your Class,” we are not referring specifically to creating a unit test. Numerous types of tests exist, and the most straightforward approach is to perform a manual test. This type of test, often referred to as a “sanity check,” involves simply verifying that everything is functioning correctly in a basic scenario.
+You should be able to create an instance of your storage class and use it:
+from storage_json import StorageJson
+
+storage = StorageJson('movies.json')
+print(storage.list_movies())
+storage.add_movie(...)
+...
+Once you finished testing your class, move on the next step. You don’t need to implement the CSV class yet.
+
+Create Movie App Class
+In this step, we will create a movie app class that will use your storage interface.
+Current Architecture
+Your current movies.py file probably looks similar to that:
+import movie_storage   # this is the old movie storage file
+
+def command_list():
+  movie_storage.list_movies()
+  ...
+
+def command_add():
+  movie_storage.add_movie()
+  ...
+
+def command_statistics():
+  movies = movie_storage.list_movies()
+  # Calculate statistics
+  ...
+
+def main():
+  # Print menu
+  # Get command from user
+  # Execute command
+
+if __name__ == "__main__":
+  main()
+Since we used OOP for the storage, it would be convenient to use classes here also.
+Desired Architecture
+Classes Diagram
+.guides/img/storage_diagram
+Click here to view the full-sized diagram.
+We will have:
+A MovieApp class that contains all the logic of the movie app (menu, commands etc.).
+The MovieApp class will have a member (field) from the type IStorage.
+Note: you didn’t implement yet the CSV class, it will be done in future steps.
+Step-By-Step Instructions
+1. Create MovieApp class
+Create the MovieApp class, in a separate file, movie_app.py.
+class MovieApp:
+    def __init__(self, storage):
+        self._storage = storage
+
+
+    def _command_list_movies(self):
+        movies = self._storage.list_movies()
+        ...
+
+    def _command_movie_stats(self):
+        ...
+
+    ...
+
+    def _generate_website(self):
+        ...
+
+    def run(self):
+      # Print menu
+      # Get use command
+      # Execute command
+We omitted the docstrings for simplicity, but you should add it in your code.
+2. Test Your Class
+You should be able to create an instance of your MovieApp class and use it:
+from movie_app import MovieApp
+from storage_json import StorageJson
+
+storage = StorageJson('movies.json')
+movie_app = MovieApp(storage)
+movie_app.run()
+💡 Try to create multiple storage files and see that your code works.
+3. Create Main file
+Create a file called main.py:
+The file should contain the main function of your program.
+In the main function, create a StorageJson object.
+After that, create a MovieApp object, with the StorageJson object you’ve created before.
+Run the app.
+Once you finished, you should have a working movie application, that that operates similarly to Phase 2.
+Clean Your Code
+Remove Redundant Files
+Your file structure should look similar (or exactly) to that:
+istorage.py
+storage_json.py
+movie_app.py
+main.py
+Remove any legacy files that are no longer in use. If you have other files that the app uses, keep them.
+PEP 8 and Styling Guidelines
+Make sure your code meets the PEP 8 guidelines. Specifically:
+Do I have docstrings?
+Did I named my functions correctly?
+OOP Guidelines
+Check the OOP guidelines:
+Do I have public functions or members that should be private? (Reminder: private functions/members start with an underscore _).
+
+Implement CSV Storage
+In this step, we will implement the CSV storage feature.
+Architecture
+Let’s take a look at the classes diagram from the previous sections:
+.guides/img/storage_diagram
+Click here to view the full-sized diagram.
+Specification
+Create a new class, called StorageCsv, in a new file, storage_csv.py. Your new class should implement the IStorage interface and save the data in a CSV file instead of a JSON file.
+Reminder - CSV
+A CSV (Comma Separated Values) file is a simple file format for storing data in a tabular format. In a CSV file, each line represents a record, and the values within each line are separated by commas. For example:
+title,rating,year
+Titanic,9.2,1995
+The Dark Knight,8.8,2002
+...
+Interface
+Let’s remember the docstring of the list_movies() function, from the interface IStorage:
+def list_movies(self):
+    """
+    Returns a dictionary of dictionaries that
+    contains the movies information in the database.
+
+    For example, the function may return:
+    {
+      "Titanic": {
+        "rating": 9,
+        "year": 1999
+      },
+      "..." {
+        ...
+      },
+    }
+    """
+    pass
+Even when you use a CSV file, you must return a dictionary. This is because the interface specifies that this is what the function returns.
+For example, when the class MovieApp call the function list_movies(), it expects it to return a dictionary.
+Test Your Class
+You should be able to create an instance of your MovieApp class and use it:
+from movie_app import MovieApp
+from storage_csv import StorageCsv
+
+storage = StorageCsv('movies.csv')
+movie_app = MovieApp(storage)
+movie_app.run()
+Try to create multiple storage files and see that your code works. You can use JSON and CSV files and switch between them.
+Isn’t It Cool?
+Using OOP we are now able to write a generic code. The class MovieApp does not care how the storage is implemented, as long as the interface is kept.
+If you need to add a new storage option (for example, to a database), you don’t need to change anything in your MovieApp class.
+
+OMDb API
+The OMDb API is a RESTful web service to obtain movie information, including data that is interesting for us.
+Accessing The API
+Playing with it
+Go to OMDb API website.
+Scroll down to the “Examples” section and try the API. Input different titles, parts of titles and see what happens. You’re going to use this API from your Python code.
+alt text
+Obtaining API Key
+Many services require using a user identifier to access the API - this identifier is called an API key. When you access the API, you should provide the API key along with your request.
+This method allows the service to track the usage of the API from different users, and possibly to apply rate limiting, for example, to make sure you don’t overuse the API.
+To get an API key for OMDb, click on the “API Key” at the navigation menu. Enter your email (private or Masterschool’s), and choose "Free account". Go to your inbox, you should find there an email from the website with your API key. If you don’t see the email, check your Spam.
+You should see this email:
+alt text
+Click on the activation key to activate your API key. Now you can use it in all future requests!
+Use It With Python
+Read the specification of the API in OMDb API home page. Use the t param to search a single by title, by making a request to:
+http://www.omdbapi.com/?apikey=[yourkey]&t=titanic
+You can try it in your browser, and via Python code. Verify that you can access the API and get results.
+
+Here is your key: 2c752a16
+
+Please append it to all of your API requests,
+
+OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=2c752a16
+
+Improving Add Movie
+Until now the “Add Movie” command was done manually, where the user had to enter the movie title, the year and the rating.
+Now, when you have access to OMDb API, we can make it better!
+Specification
+Add Movie
+Change the command “Add Movie” so it takes only movie title from the user. The command then searches the movie in OMDb API, and fetches the following parameters:
+Title
+Year
+Rating
+Poster Image URL
+The command should save these parameters in your data structure. If you need to change it a bit to support poster image URL, do it.
+Update Movie
+This command does no longer make much sense, since we have real data from an API, and manually updating the data seems unnecessary. You can ignore it in this step, do not change it, leave it as is.
+Error Handling
+Notice that you’re using an external API, and some errors can occur in the way:
+Movie not found - what happens if a movie is not found in the database?
+API is not accessible - what happens if there is a connection error? If you want to test this condition, try disconnecting your internet connection and then running the app.
+You have to deal with these errors. You can use exceptions on some cases, and simple if conditions on other cases.
+Wrapping Up
+Try your new application, adding movies based on the API, deleting movies, listing movies, running the stats etc. Everything should work as expected.
+Check again if your code meets the training’s standards: division to functions, clean code, PEP 8 etc.
+
+Generating Website
+Expected Website
+Click here to open the expected website output. This is just a sample page with 2 movies.
+To view the page in a different tab, click on this button:
+.guides/img/preview-open
+To inspect the website’s source code, right click on the website, and choose “View Page Source” (only works when you’re opening the web page in a new tab!).
+.guides/img/view-page-source
+Template Files
+All the website files are under the directory _static, open it in the file browser in Codio. You can also download the files to your computer and use them in PyCharm.
+File Description
+index_template.html - an HTML template file that you can use to generate your website.
+style.css - a CSS file for the website. Notice that the file must be in the same directory as the HTML file.
+Inspect the template file and the expected website, and understand how each movie item is constructed in the website. In other words, understand what HTML code you need to add to create the movie grid.
+
+Specification
+Add another command to menu:
+Menu:
+0. Exit
+1. List movies
+...
+9. Generate website
+The command should generate the website according to the template, and create a file called index.html that have the full website.
+After the website generation, your code should print:
+Website was generated successfully.
+Notes
+In the template file, you have two placeholders:
+__TEMPLATE_TITLE__ - replace with the title of your application, your choice.
+__TEMPLATE_MOVIE_GRID__ - replace with the movie grid.
+
+Project File Tree
+A professional looking project should have a file and folder structure that is up to standards. Let’s take a look at common files that most projects have:
+README.md: A markdown file that serves as the first point of contact with your project. What is the essential information about the Movie project? What is its purpose? How do we set it up? How do we use it?
+requirements.txt: Contains a list of modules that the project needs in order to run (dependencies).
+.gitignore: This file lists all the files and directories that should be ignored by Git.
+Main python file: e.g. main.py, app.py, run.py.
+Directories
+We often have special directories like /data, /static or /config for certain files crucial to our project. Let’s create a /data folder to keep any .json or .csv file.
+Packages
+As the project is growing in the number of files, we’ll probably want to split our Python code into packages (or sub-directories). Packages usually represent different areas of concern that the program deals with. Let’s make a storage package where we will put all our python files that deal with storage. An example of what the package might look like is here:
+.guides/img/storage_diagram
+

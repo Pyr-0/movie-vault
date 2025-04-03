@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__TEMPLATE_TITLE__</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+header {
+    background-color: #2c8a3d;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.movie {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.movie:hover {
+    transform: translateY(-5px);
+}
+
+.movie-poster-container {
+            position: relative;
+            overflow: hidden;
+        }
+.movie-poster {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+	transition: filter 0.3s ease;
+}
+.movie-notes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .movie-poster-container:hover .movie-notes {
+            opacity: 1;
+        }
+
+        .movie-poster-container:hover .movie-poster {
+            filter: blur(3px);
+        }
+
+.movie-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 120px;
+}
+
+.movie-title {
+    font-weight: bold;
+    padding: 1rem;
+    text-align: center;
+}
+
+.movie-year {
+    color: #666;
+    text-align: center;
+    padding-bottom: 0.5rem;
+}
+
+.movie-rating {
+    background: #2c8a3d;
+    color: white;
+    text-align: center;
+    padding: 0.5rem;
+    margin-top: auto;
+} 
+    </style>
+</head>
+<body>
+    <header>
+        <h1>__TEMPLATE_TITLE__</h1>
+    </header>
+    
+    <div class="movie-grid">
+        __TEMPLATE_MOVIE_GRID__
+    </div>
+</body>
+</html>
