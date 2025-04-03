@@ -48,11 +48,11 @@ class IStorage(ABC):
 		pass
 
 	@abstractmethod
-	def update_movie(self, title: str, notes: str) -> None:
-		"""Updates a movie's notes in the storage.
-		
-		Args:
-			title: The title of the movie to update
-			notes: The notes to add to the movie
-		"""
+	def update_movie(self, title: str, rating: float) -> None:
+		"""Updates a movie's rating in the storage."""
+		pass
+
+	@abstractmethod
+	def update_notes(self, title: str, notes: str) -> None:
+		"""Updates a movie's notes in the storage."""
 		pass 

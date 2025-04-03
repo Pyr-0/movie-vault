@@ -2,7 +2,7 @@ import os
 import requests
 from typing import Dict, Any
 from dotenv import load_dotenv
-from storage.istorage import IStorage
+from storage.istorage import IStorage  # type: ignore
 
 class MovieApp:
 	"""Main movie application class that handles user interaction and movie operations."""
@@ -19,14 +19,11 @@ class MovieApp:
 		# Load environment variables
 		load_dotenv()
 		
-		self._storage = storage
-		self._api_key = os.getenv("OMDB_API_KEY")
+		self._storage: IStorage = storage
+		self._api_key = os.getenv("OMDB_API_KEY", None)
 		
 		if not self._api_key:
-			raise ValueError(
-				"OMDB_API_KEY environment variable is not set. "
-				"Please create a .env file with your API key."
-			)
+			raise ValueError("OMDB_API_KEY environment variable is not set.")
 		
 	def _fetch_movie_info(self, title: str) -> Dict[str, Any] | None:
 		"""Fetch movie information from OMDB API.
@@ -68,11 +65,17 @@ class MovieApp:
 		# Generate movie grid HTML
 		movie_grid = ""
 		for title, info in movies.items():
+			# Only include notes div if notes exist and are not empty
+			notes_div = ''
+			if 'notes' in info and info['notes'] and info['notes'].strip():
+				notes = info['notes'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+				notes_div = f'<div class="movie-notes">{notes}</div>'
+			
 			movie_grid += f'''
 			<div class="movie">
 				<div class="movie-poster-container">
 					<img class="movie-poster" src="{info['poster']}" alt="{title} poster">
-					<div class="movie-notes">{info.get('notes', '')}</div>
+					{notes_div}
 				</div>
 				<div class="movie-info">
 					<div class="movie-title">{title}</div>
@@ -132,15 +135,27 @@ class MovieApp:
 		self._storage.delete_movie(title)
 		print(f"\nMovie '{title}' deleted successfully!")
 		
-	def _command_update_rating(self):
+	def _command_update_notes(self):
 		"""Update a movie's notes."""
 		title = input("Enter movie title: ").strip()
-		notes = input("Enter movie notes: ").strip()
-		try:
-			self._storage.update_movie(title, notes)
-			print(f"\nMovie '{title}' notes updated successfully!")
-		except KeyError:
+		
+		# Get all movies and find a case-insensitive match
+		movies = self._storage.list_movies()
+		matching_title = None
+		for movie_title in movies:
+			if movie_title.lower() == title.lower():
+				matching_title = movie_title
+				break
+		
+		if matching_title:
+			notes = input("Enter movie notes: ").strip()
+			self._storage.update_notes(matching_title, notes)
+			print(f"\nMovie '{matching_title}' notes updated successfully!")
+		else:
 			print(f"\nError: Movie '{title}' not found.")
+			print("Note: Movie titles are case-sensitive. Available movies:")
+			for movie_title in sorted(movies.keys()):
+				print(f"- {movie_title}")
 			
 	def run(self):
 		"""Run the movie application's main loop."""
@@ -149,7 +164,7 @@ class MovieApp:
 			print("1. List movies")
 			print("2. Add movie")
 			print("3. Delete movie")
-			print("4. Update movie")
+			print("4. Update movie notes")
 			print("5. Generate website")
 			print("0. Exit")
 			
@@ -162,7 +177,7 @@ class MovieApp:
 			elif choice == "3":
 				self._command_delete_movie()
 			elif choice == "4":
-				self._command_update_rating()
+				self._command_update_notes()
 			elif choice == "5":
 				self._generate_website()
 			elif choice == "0":

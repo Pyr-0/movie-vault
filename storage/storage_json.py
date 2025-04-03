@@ -71,13 +71,15 @@ class StorageJson(IStorage):
 			del movies[title]
 			self._write_data(movies)
 			
-	def update_movie(self, title: str, notes: str) -> None:
-		"""Updates a movie's notes in the JSON storage.
-		
-		Args:
-			title: The title of the movie to update
-			notes: The new notes for the movie
-		"""
+	def update_movie(self, title: str, rating: float) -> None:
+		"""Updates a movie's rating in storage."""
+		movies = self._read_data()
+		if title in movies:
+			movies[title]["rating"] = rating
+			self._write_data(movies)
+
+	def update_notes(self, title: str, notes: str) -> None:
+		"""Updates a movie's notes in storage."""
 		movies = self._read_data()
 		if title in movies:
 			movies[title]["notes"] = notes
