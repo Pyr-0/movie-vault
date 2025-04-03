@@ -9,16 +9,16 @@
 
 A modern, feature-rich movie collection manager built with Python, featuring OMDB API integration and a sleek web interface.
 
-[Features](#✨-features) •
-[Demo](#🚀-demo) •
-[Installation](#💻-installation) •
-[Usage](#📖-usage) •
-[Architecture](#🏗️-architecture) •
-[Security](#🔒-security)
+[Features](#features) •
+[Demo](#demo) •
+[Installation](#installation) •
+[Usage](#usage) •
+[Architecture](#architecture) •
+[Security](#security)
 
 </div>
 
-## ✨ Features
+## ✨ Features {#features}
 
 - 🎯 **Smart Movie Search**: Automatically fetch movie details from OMDB API
 - 💾 **Flexible Storage**: Choose between JSON or CSV storage backends
@@ -28,18 +28,21 @@ A modern, feature-rich movie collection manager built with Python, featuring OMD
 - 🔐 **Secure Design**: Environment-based configuration management
 - 🎨 **Modern UI**: Clean, responsive design with smooth hover effects
 
-## 🚀 Demo
+## 🚀 Demo {#demo}
 
 <div align="center">
+
+![Movie Collection Preview](assets/page_sample.png)
+
 Your movie collection comes to life with a modern, grid-based layout:
 
 - 🖼️ Movie posters with hover effects
 - 📊 Ratings displayed prominently
-- 📝 Personal notes visible on hover
+- 📝 Personal notes visible on hover (as shown in the preview above)
 - 🎨 Consistent, professional styling
 </div>
 
-## 💻 Installation
+## 💻 Installation {#installation}
 
 1. **Clone the Repository**
    ```bash
@@ -54,11 +57,11 @@ Your movie collection comes to life with a modern, grid-based layout:
 
 3. **Configure Environment**
    ```bash
-   cp .env.example .env
-   # Edit .env and add your OMDB API key
+   # Create a .env file with your OMDB API key
+   echo "OMDB_API_KEY=your_api_key_here" > .env
    ```
 
-## 📖 Usage
+## 📖 Usage {#usage}
 
 1. **Start the Application**
    ```bash
@@ -75,10 +78,12 @@ Your movie collection comes to life with a modern, grid-based layout:
    0️⃣ Exit         - Close application
    ```
 
-## 🏗️ Architecture
+## 🏗️ Architecture {#architecture}
 
 ```
 movie-vault/
+├── 📁 assets/         # Static assets
+│   └── 📄 page_sample.png  # Preview image
 ├── 📁 data/           # Storage directory
 ├── 📁 storage/        # Storage implementations
 │   ├── 📄 istorage.py    # Storage interface
@@ -91,7 +96,7 @@ movie-vault/
 └── 📄 README.md      # Documentation
 ```
 
-## 🔧 Storage Options
+## 🔧 Storage Options {#storage}
 
 Choose your preferred storage backend:
 
@@ -103,21 +108,21 @@ storage = StorageJson("data/movies.json")
 storage = StorageCsv("data/movies.csv")
 ```
 
-## 🔒 Security
+## 🔒 Security {#security}
 
 - ✅ Secure API key storage using environment variables
 - ✅ `.env` file excluded from version control
 - ✅ Example configuration provided in `.env.example`
 - ✅ No sensitive data exposed in the generated website
 
-## 🤝 Contributing
+## 🤝 Contributing {#contributing}
 
 Contributions are welcome! Feel free to:
 - 🐛 Report bugs
 - 💡 Suggest features
 - 🔧 Submit pull requests
 
-## 📜 License
+## 📜 License {#license}
 
 This project is licensed under the MIT License - making it perfect for both personal and commercial use.
 
@@ -125,6 +130,6 @@ This project is licensed under the MIT License - making it perfect for both pers
 
 <div align="center">
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by Milton R.E
 
 </div> 
